@@ -29,6 +29,8 @@ unsigned long currentMillis ;
 int steps_left=4095;
 long time;
 
+String command;
+
 void setup(){
   Serial.begin(9600);
   Serial.println("Start program ...");
@@ -41,40 +43,89 @@ void setup(){
 }
 
 void loop(){
-  Serial.println("Servo 0 t o180"); 
-  for(angle = 0; angle < 180; angle++){
-    servo.write(angle);
-    delay(5);
-  }
 
-  Serial.println("Step motor"); 
-  while(steps_left>0){
-    currentMillis = micros();
-    if(currentMillis-last_time>=1000){
-      stepper(1, M3IN1, M3IN2, M3IN3, M3IN4);
-      time=time+micros()-last_time;
-      last_time=micros();
-    steps_left--;
+  if(Serial.available()){
+        command = Serial.readStringUntil('/n');
+        Serial.println("command:  " + command + "!");
+        CommandHandler(command);  
+  }
+}
+
+
+void CommandHandler(String Str){
+
+switch(Str[0]){
+  case 's':
+    Serial.println("Command Servo");
+    switch(Str[1]){
+      case 'o':
+        Serial.println("Command mode oopen for command Servo");
+              for(angle = 0; angle < 180; angle++){
+                servo.write(angle);
+              }
+        break;
+      case 'c':
+        Serial.println("Command mode close for command Servo");
+              for(angle = 180; angle > 0; angle--){
+                servo.write(angle);
+              }
+        break;
+      default:
+        Serial.println("Unknown command mode for command Servo");
     }
-  }
-  
-  Serial.println(time);
-  Serial.println("Wait...!");
-  delay(2000);
-  Serial.println("Direction:");
-  Serial.println(Direction);
-  Serial.println("Steps:");
-  Serial.println(Steps);
-  Direction=!Direction;
-  
-  steps_left=4095;
+    break;
+  case 'm':
+    Serial.println("Command motor");
+    switch(Str[1]){
+      case 't':
+      Direction = true;
+      stepMotorCommand(Str);
+      break;
+      case 'f':
+      Direction = false;
+      stepMotorCommand(Str);
+      break;
+    }
+    break;
+  default:
+  Serial.println("Unknown command");
+}
+}
 
 
-  Serial.println("Servo 180 to 0");
-  for(angle = 180; angle > 0; angle--){
-    servo.write(angle);
-    delay(5);
-  }
+void stepMotorCommand(String Str){
+        switch(Str[2]){
+        case '1':
+          Serial.println("Motor 1");
+          while(steps_left>0){
+            currentMillis = micros();
+            if(currentMillis-last_time>=1000){
+              stepper(1, M1IN1, M1IN2, M1IN3, M1IN4);
+              time=time+micros()-last_time;
+              last_time=micros();
+            steps_left--;
+            }
+          }
+          break;
+        case '2':
+          Serial.println("Motor 2");
+          break;
+        case '3':
+        steps_left = 2000;
+          while(steps_left>0){
+            currentMillis = micros();
+            if(currentMillis-last_time>=1000){
+              stepper(1, M3IN1, M3IN2, M3IN3, M3IN4);
+              time=time+micros()-last_time;
+              last_time=micros();
+            steps_left--;
+            }
+          }
+          break;
+        default:
+          Serial.println("Unknown command mode for command Motor");
+      }
+      steps_left=4095;
 }
 
 void initStepMotor(int IN1, int IN2, int IN3, int IN4){
