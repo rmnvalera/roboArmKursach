@@ -15,19 +15,21 @@
 #define M3IN3 12
 #define M3IN4 13
 
+#define SERVOPIN A5
+
+#define MOTOR_STEP 4095
 
 //Servo Setup
-Servo servo;
-const int SERVO_PIN = A5;
-int Steps = 0;
-int angle = 0;
+Servo         servo;
+int           Steps = 0;
+int           angle = 0;
 
 //Step Motor Setup
-boolean Direction = true;
+long          time;
 unsigned long last_time;
-unsigned long currentMillis ;
-int steps_left=4095;
-long time;
+unsigned long currentMillis;
+int           steps_left  = MOTOR_STEP;
+boolean       Direction   = true;
 
 String command;
 
@@ -35,7 +37,7 @@ void setup(){
   Serial.begin(9600);
   Serial.println("Start program ...");
   
-  servo.attach(SERVO_PIN);
+  servo.attach(SERVOPIN);
 
   initStepMotor(M1IN1, M1IN2, M1IN3, M1IN4);
   initStepMotor(M2IN1, M2IN2, M2IN3, M2IN4);
@@ -125,7 +127,7 @@ void stepMotorCommand(String Str){
         default:
           Serial.println("Unknown command mode for command Motor");
       }
-      steps_left=4095;
+      steps_left = MOTOR_STEP;
 }
 
 void initStepMotor(int IN1, int IN2, int IN3, int IN4){
