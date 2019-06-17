@@ -4,6 +4,7 @@ import health.TemplateHealthCheck;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import utils.ArduinoUtil;
 
 public class ArmServer extends Application<ArmServerConfiguration> {
 
@@ -26,8 +27,11 @@ public class ArmServer extends Application<ArmServerConfiguration> {
         final TemplateHealthCheck healthCheck = new TemplateHealthCheck(configuration.getTemplate());
         environment.healthChecks().register("template", healthCheck);
 
-        ServoController servoController = new ServoController();
-        MotorController motorController = new MotorController();
+        ArduinoUtil arduinoUtil = new ArduinoUtil(configuration.getArduinoConfiguration().getPort(), configuration.getArduinoConfiguration().getBaudRate());
+        arduinoUtil.init();
+
+        ServoController servoController = new ServoController(arduinoUtil.getArduino());
+        MotorController motorController = new MotorController(arduinoUtil.getArduino());
 
         environment.jersey().register(motorController);
         environment.jersey().register(servoController);

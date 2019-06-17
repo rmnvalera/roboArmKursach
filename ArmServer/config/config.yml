@@ -1,6 +1,8 @@
 template: "ArmServer"
 
-arduinoPort: COM4
+arduino:
+  port: "COM4"
+  baudRate: 9600
 
 server:
   applicationConnectors:
