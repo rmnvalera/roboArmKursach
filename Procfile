@@ -1,1 +1,1 @@
-web: java -jar target/ArmServer-1.0.jar config/config.yml
+web: java -jar target/ArmServer-1.0.jar server config/config.yml
