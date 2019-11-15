@@ -21,7 +21,7 @@ public class ArduinoUtil {
 
     public void init() {
         arduino = new Arduino(port, baud_rate);
-        checkconnection();
+//        checkconnection();
         try {
             Thread.sleep(2000);
         } catch (InterruptedException e) {
