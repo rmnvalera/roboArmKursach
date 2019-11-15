@@ -1,1 +1,1 @@
-web: java -jar target/ArmServer-1.0.jar server config/config.yml
+web: java -Dserver.port=$PORT -jar target/ArmServer-1.0.jar server config/config.yml
