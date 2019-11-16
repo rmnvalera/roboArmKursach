@@ -1,1 +1,1 @@
-web: java -Ddw.server.applicationConnectors[0].port=$PORT -jar target/ArmServer-1.0.jar server config/config.yml
+web: java $JAVA_OPTS -Ddw.server.applicationConnectors.port=$PORT -jar target/ArmServer-1.0.jar server config/config.yml
