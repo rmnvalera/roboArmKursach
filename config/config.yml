@@ -5,9 +5,6 @@ arduino:
   baudRate: 9600
 
 server:
-  applicationConnectors:
-    - type: http
-      port: 8000
   adminConnectors:
     - type: http
       port: 8443
